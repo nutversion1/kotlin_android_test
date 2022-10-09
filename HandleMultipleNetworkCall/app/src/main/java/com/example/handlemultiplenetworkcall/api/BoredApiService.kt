@@ -1,5 +1,6 @@
 package com.example.handlemultiplenetworkcall.api
 
+import com.example.handlemultiplenetworkcall.model.Activity
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -10,5 +11,5 @@ interface BoredApiService {
     @GET("activity")
     suspend fun searchActivity(
         @Query("participants") participants: Int
-    ): Response<String>
+    ): Response<Activity>
 }

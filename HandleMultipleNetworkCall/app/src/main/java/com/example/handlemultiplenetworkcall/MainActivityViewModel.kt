@@ -19,16 +19,16 @@ class MainActivityViewModel(private val repository: BoredRepository) : ViewModel
     fun sequenceChainingRequest() {
         viewModelScope.launch {
             Log.d("myDebug", "1")
-            val result1 = repository.searchActivity(1).body()
-            Log.d("myDebug", "r1: $result1")
+            val result1 = repository.searchActivity(1)
+            Log.d("myDebug", "r1: ${result1.isSuccessful} ${result1.body()}")
 
             Log.d("myDebug", "2")
-            val result2 = repository.searchActivity(2).body()
-            Log.d("myDebug", "r2: $result2")
+            val result2 = repository.searchActivity(2)
+            Log.d("myDebug", "r2: ${result1.isSuccessful} ${result2.body()}")
 
             Log.d("myDebug", "3")
-            val result3 = repository.searchActivity(3).body()
-            Log.d("myDebug", "r3: $result3")
+            val result3 = repository.searchActivity(3)
+            Log.d("myDebug", "r3: ${result1.isSuccessful} ${result3.body()}")
         }
     }
 
