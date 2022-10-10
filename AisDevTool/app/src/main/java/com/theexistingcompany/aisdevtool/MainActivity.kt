@@ -1,19 +1,24 @@
 package com.theexistingcompany.aisdevtool
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.theexistingcompany.aisdevtool.api.EasyAppService
 import com.theexistingcompany.aisdevtool.model.AuthRequest
 import com.theexistingcompany.aisdevtool.model.AuthResponse
+import com.theexistingcompany.aisdevtool.viewmodel.MainActivityViewModel
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,63 +26,35 @@ class MainActivity : AppCompatActivity() {
     private val displayTextView by lazy{ findViewById<TextView>(R.id.displayTextView) }
     private val button by lazy{ findViewById<TextView>(R.id.button) }
 
-    private val easyAppApiRetrofit by lazy {
-        val httpClient = OkHttpClient.Builder()
-
-        httpClient.addInterceptor { chain ->
-            val request: Request = chain.request().newBuilder()
-                .addHeader("x-authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkpBUlVXQU5OIiwidGltZXN0YW1wIjoiMTY2NTM4NDIzNzA3NiIsImxvY2F0aW9uQ29kZSI6IiIsImVtYWlsIjoiIiwiZmlyc3RuYW1lIjoiIiwibGFzdG5hbWUiOiIiLCJzaGFyZWRVc2VyIjoiamFydXdhbm4iLCJ1c2VyVHlwZSI6IiIsInJvbGUiOiJBSVMiLCJjaGFubmVsVHlwZSI6ImVhc3ktYXBwIiwiYXNjQ29kZSI6IiIsIm1vYmlsZU5vIjoiIiwic3ViIjoiQllQQVNTSURTIiwib3V0Q2huU2FsZXMiOiJTYWxlcyBQcm9tb3RlciIsIm91dEJ1c2luZXNzTmFtZSI6IiIsIm91dFBvc2l0aW9uIjoiU2FsZXMiLCJvdSI6IkVNUExPWUVFIiwiaWF0IjoxNjY1Mzg0MjQ4LCJleHAiOjE2NjU0NzA2NDh9.EYqeZMxOmfkMBlCQrOO_dvtwiQjCC919jOUWd21VEfc")
-                .addHeader("channelType", "easy-app")
-                .build()
-            chain.proceed(request)
-        }
-
-        val client: OkHttpClient = httpClient.build()
-
-        Retrofit.Builder()
-            .baseUrl("http://dev-mychannel.cdc.ais.th/api/")
-            .client(client)
-            //.addConverterFactory(MoshiConverterFactory.create())
-            //.addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    private val easyAppService by lazy {
-        easyAppApiRetrofit.create(EasyAppService::class.java)
-    }
-
+    private val mainActivityViewModel: MainActivityViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         button.setOnClickListener{
-            getEasyAppResponse()
+            mainActivityViewModel.let {
+                it.logInSuccess.observe(this, logInSuccessObserver)
+                it.loginFailure.observe(this, logInFailureObserver)
+                it.loginLoading.observe(this, logInLoadingObserver)
+            }
+
+            mainActivityViewModel.logIn("jaruwann", "0")
         }
-
-
     }
 
-    private fun getEasyAppResponse() {
-        val call = easyAppService.logIn(AuthRequest("jaruwann", "0"))
-        //val call = easyAppService.currentDate())
-
-        call.enqueue(object : Callback<AuthResponse> {
-            override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                displayTextView.text = "Failed to get find results: $t"
-            }
-
-            override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
-                if (response.isSuccessful) {
-
-                    displayTextView.text = "response: ${response.body()}"
-                } else {
-                    displayTextView.text = "fail: ${response.message()}"
-                }
-            }
-        })
+    private val logInSuccessObserver = Observer<AuthResponse?> {
+        Log.d("myDebug", "success: $it")
+        displayTextView.text = "success: $it"
     }
 
+    private val logInFailureObserver = Observer<String?> {
+        Log.d("myDebug", "fail")
+        displayTextView.text = "fail: $it"
+    }
 
+    private val logInLoadingObserver = Observer<Unit> {
+        Log.d("myDebug", "loading")
+        displayTextView.text = "loading..."
+    }
 }
