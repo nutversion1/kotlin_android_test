@@ -1,47 +1,50 @@
 package com.theexistingcompany.aisdevtool
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
-import com.theexistingcompany.aisdevtool.api.BoredApiService
-import com.theexistingcompany.aisdevtool.api.DogApiService
-import com.theexistingcompany.aisdevtool.model.ActivityResultData
-import com.theexistingcompany.aisdevtool.model.DogResultData
+import androidx.appcompat.app.AppCompatActivity
+import com.theexistingcompany.aisdevtool.api.EasyAppService
+import com.theexistingcompany.aisdevtool.model.AuthRequest
+import com.theexistingcompany.aisdevtool.model.AuthResponse
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.gson.GsonConverterFactory
+
 
 class MainActivity : AppCompatActivity() {
     private val imageView by lazy{ findViewById<ImageView>(R.id.imageView) }
     private val displayTextView by lazy{ findViewById<TextView>(R.id.displayTextView) }
     private val button by lazy{ findViewById<TextView>(R.id.button) }
 
-    private val imageLoader: ImageLoader by lazy{ GlideImageLoader(this) }
+    private val easyAppApiRetrofit by lazy {
+        val httpClient = OkHttpClient.Builder()
 
-    private val boredApiRetrofit by lazy {
+        httpClient.addInterceptor { chain ->
+            val request: Request = chain.request().newBuilder()
+                .addHeader("x-authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkpBUlVXQU5OIiwidGltZXN0YW1wIjoiMTY2NTM4NDIzNzA3NiIsImxvY2F0aW9uQ29kZSI6IiIsImVtYWlsIjoiIiwiZmlyc3RuYW1lIjoiIiwibGFzdG5hbWUiOiIiLCJzaGFyZWRVc2VyIjoiamFydXdhbm4iLCJ1c2VyVHlwZSI6IiIsInJvbGUiOiJBSVMiLCJjaGFubmVsVHlwZSI6ImVhc3ktYXBwIiwiYXNjQ29kZSI6IiIsIm1vYmlsZU5vIjoiIiwic3ViIjoiQllQQVNTSURTIiwib3V0Q2huU2FsZXMiOiJTYWxlcyBQcm9tb3RlciIsIm91dEJ1c2luZXNzTmFtZSI6IiIsIm91dFBvc2l0aW9uIjoiU2FsZXMiLCJvdSI6IkVNUExPWUVFIiwiaWF0IjoxNjY1Mzg0MjQ4LCJleHAiOjE2NjU0NzA2NDh9.EYqeZMxOmfkMBlCQrOO_dvtwiQjCC919jOUWd21VEfc")
+                .addHeader("channelType", "easy-app")
+                .build()
+            chain.proceed(request)
+        }
+
+        val client: OkHttpClient = httpClient.build()
+
         Retrofit.Builder()
-            .baseUrl("https://www.boredapi.com/api/")
-            .addConverterFactory(MoshiConverterFactory.create())
+            .baseUrl("http://dev-mychannel.cdc.ais.th/api/")
+            .client(client)
+            //.addConverterFactory(MoshiConverterFactory.create())
             //.addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-    private val boredApiService by lazy {
-        boredApiRetrofit.create(BoredApiService::class.java)
-    }
 
-    private val dogApiRetrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl("https://dog.ceo/api/")
-            .addConverterFactory(MoshiConverterFactory.create())
-            //.addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-    }
-    private val dogApiService by lazy {
-        dogApiRetrofit.create(DogApiService::class.java)
+    private val easyAppService by lazy {
+        easyAppApiRetrofit.create(EasyAppService::class.java)
     }
 
 
@@ -50,50 +53,31 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         button.setOnClickListener{
-            //getActivityResponse()
-            getDogResponse()
+            getEasyAppResponse()
         }
+
+
     }
 
-    private fun getActivityResponse() {
-        val call = boredApiService.findActivity((1..5).random())
+    private fun getEasyAppResponse() {
+        val call = easyAppService.logIn(AuthRequest("jaruwann", "0"))
+        //val call = easyAppService.currentDate())
 
-        call.enqueue(object : Callback<ActivityResultData> {
-            override fun onFailure(call: Call<ActivityResultData>, t: Throwable) {
-                displayTextView.text = "Failed to get find results"
+        call.enqueue(object : Callback<AuthResponse> {
+            override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                displayTextView.text = "Failed to get find results: $t"
             }
 
-            override fun onResponse(call: Call<ActivityResultData>, response: Response<ActivityResultData>) {
+            override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
                 if (response.isSuccessful) {
-                    displayTextView.text = "Activity: ${response.body()?.activity}\n\nType: ${response.body()?.type}\n\nParticipants: ${response.body()?.participants}"
+
+                    displayTextView.text = "response: ${response.body()}"
                 } else {
-                    displayTextView.text = "fail"
+                    displayTextView.text = "fail: ${response.message()}"
                 }
             }
         })
     }
 
-    private fun getDogResponse() {
-        val call = dogApiService.searchImage()
 
-        call.enqueue(object : Callback<DogResultData> {
-            override fun onFailure(call: Call<DogResultData>, t: Throwable) {
-                displayTextView.text = "Failed to get find results"
-            }
-
-            override fun onResponse(call: Call<DogResultData>, response: Response<DogResultData>) {
-                if (response.isSuccessful) {
-                    displayTextView.text = "Image Url: ${response.body()?.imageUrl}"
-
-                    if(displayTextView.text.isNotBlank()){
-                        imageLoader.loadImage(response.body()?.imageUrl.toString(), imageView)
-                    }
-
-
-                } else {
-                    displayTextView.text = "fail"
-                }
-            }
-        })
-    }
 }
