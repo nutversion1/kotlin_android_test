@@ -6,18 +6,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.theexistingcompany.aisdevtool.api.EasyAppService
 import com.theexistingcompany.aisdevtool.model.*
 import com.theexistingcompany.aisdevtool.viewmodel.MainActivityViewModel
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 
 class MainActivity : AppCompatActivity() {
@@ -45,16 +36,20 @@ class MainActivity : AppCompatActivity() {
                 it.getCurrentDateFailure.observe(this, getCurrentDateFailureObserver)
                 it.getCurrentDateLoading.observe(this, getCurrentDateLoadingObserver)
 
-                it.queryEDocumentSuccess.observe(this, queryEDocumentSuccessObserver)
-                it.queryEDocumentFailure.observe(this, queryEDocumentFailureObserver)
-                it.queryEDocumentLoading.observe(this, queryEDocumentLoadingObserver)
+                it.queryEDocumentTCSuccess.observe(this, queryEDocumentTCSuccessObserver)
+                it.queryEDocumentTCFailure.observe(this, queryEDocumentTCFailureObserver)
+                it.queryEDocumentTCLoading.observe(this, queryEDocumentTCLoadingObserver)
+
+                it.queryEDocumentConsentSuccess.observe(this, queryEDocumentConsentSuccessObserver)
+                it.queryEDocumentConsentFailure.observe(this, queryEDocumentConsentFailureObserver)
+                it.queryEDocumentConsentLoading.observe(this, queryEDocumentConsentLoadingObserver)
             }
 
 //            mainActivityViewModel.logIn("jaruwann", "0")
 //            mainActivityViewModel.checkDeathStatus("1100701208535", "25330715")
 //            mainActivityViewModel.getCurrentDate()
-//            mainActivityViewModel.queryEDocument("PI", "TC")
-            mainActivityViewModel.queryEDocument("PI", "Consent")
+            mainActivityViewModel.queryEDocumentTC()
+            mainActivityViewModel.queryEDocumentConsent()
         }
     }
 
@@ -111,19 +106,37 @@ class MainActivity : AppCompatActivity() {
 
     /////////////////////////////
 
-    private val queryEDocumentSuccessObserver = Observer<QueryEDocumentResponse?> {
+    private val queryEDocumentTCSuccessObserver = Observer<QueryEDocumentResponse?> {
 
         Log.d("myDebug", "success: $it")
 
     }
 
-    private val queryEDocumentFailureObserver = Observer<String?> {
+    private val queryEDocumentTCFailureObserver = Observer<String?> {
         Log.d("myDebug", "fail: $it")
 
     }
 
-    private val queryEDocumentLoadingObserver = Observer<Unit> {
+    private val queryEDocumentTCLoadingObserver = Observer<Unit> {
         Log.d("myDebug", "loading 4")
+
+    }
+
+    /////////////////////////////
+
+    private val queryEDocumentConsentSuccessObserver = Observer<QueryEDocumentResponse?> {
+
+        Log.d("myDebug", "success: $it")
+
+    }
+
+    private val queryEDocumentConsentFailureObserver = Observer<String?> {
+        Log.d("myDebug", "fail: $it")
+
+    }
+
+    private val queryEDocumentConsentLoadingObserver = Observer<Unit> {
+        Log.d("myDebug", "loading 5")
 
     }
 }

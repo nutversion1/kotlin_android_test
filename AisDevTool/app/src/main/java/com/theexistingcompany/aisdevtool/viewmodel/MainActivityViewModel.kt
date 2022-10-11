@@ -10,7 +10,8 @@ class MainActivityViewModel(
     private val logInUseCase: LogInUseCase,
     private val checkDeathStatusUseCase: CheckDeathStatusUseCase,
     private val getCurrentDateUseCase: GetCurrentDateUseCase,
-    private val queryEDocumentUseCase: QueryEDocumentUseCase,
+    private val queryEDocumentTCUseCase: QueryEDocumentUseCase,
+    private val queryEDocumentConsentUseCase: QueryEDocumentUseCase,
     ) : ViewModel() {
 
     private val _logInUseCase = logInUseCase.observe()
@@ -46,16 +47,27 @@ class MainActivityViewModel(
     val getCurrentDateLoading
         get() = _getCurrentDateLoading
 
-    private val _queryEDocumentUseCase = queryEDocumentUseCase.observe()
-    private val _queryEDocumentSuccess = MediatorLiveData<QueryEDocumentResponse?>()
-    val queryEDocumentSuccess
-        get() = _queryEDocumentSuccess
-    private val _queryEDocumentFailure = MediatorLiveData<String>()
-    val queryEDocumentFailure
-        get() = _queryEDocumentFailure
-    private val _queryEDocumentLoading = MediatorLiveData<Unit>()
-    val queryEDocumentLoading
-        get() = _queryEDocumentLoading
+    private val _queryEDocumentTCUseCase = queryEDocumentTCUseCase.observe()
+    private val _queryEDocumentTCSuccess = MediatorLiveData<QueryEDocumentResponse?>()
+    val queryEDocumentTCSuccess
+        get() = _queryEDocumentTCSuccess
+    private val _queryEDocumentTCFailure = MediatorLiveData<String>()
+    val queryEDocumentTCFailure
+        get() = _queryEDocumentTCFailure
+    private val _queryEDocumentTCLoading = MediatorLiveData<Unit>()
+    val queryEDocumentTCLoading
+        get() = _queryEDocumentTCLoading
+
+    private val _queryEDocumentConsentUseCase = queryEDocumentConsentUseCase.observe()
+    private val _queryEDocumentConsentSuccess = MediatorLiveData<QueryEDocumentResponse?>()
+    val queryEDocumentConsentSuccess
+        get() = _queryEDocumentConsentSuccess
+    private val _queryEDocumentConsentFailure = MediatorLiveData<String>()
+    val queryEDocumentConsentFailure
+        get() = _queryEDocumentConsentFailure
+    private val _queryEDocumentConsentLoading = MediatorLiveData<Unit>()
+    val queryEDocumentConsentLoading
+        get() = _queryEDocumentConsentLoading
 
     init {
         _logInUseCase.convert(
@@ -79,11 +91,18 @@ class MainActivityViewModel(
             loading = { _getCurrentDateLoading.postValue(Unit) }
         )
 
-        _queryEDocumentUseCase.convert(
-            liveData = _queryEDocumentSuccess,
-            success = { data -> _queryEDocumentSuccess.postValue(data) },
-            failure = { exception -> _queryEDocumentFailure.postValue(exception.message) },
-            loading = { _queryEDocumentLoading.postValue(Unit) }
+        _queryEDocumentTCUseCase.convert(
+            liveData = _queryEDocumentTCSuccess,
+            success = { data -> _queryEDocumentTCSuccess.postValue(data) },
+            failure = { exception -> _queryEDocumentTCFailure.postValue(exception.message) },
+            loading = { _queryEDocumentTCLoading.postValue(Unit) }
+        )
+
+        _queryEDocumentConsentUseCase.convert(
+            liveData = _queryEDocumentConsentSuccess,
+            success = { data -> _queryEDocumentConsentSuccess.postValue(data) },
+            failure = { exception -> _queryEDocumentConsentFailure.postValue(exception.message) },
+            loading = { _queryEDocumentConsentLoading.postValue(Unit) }
         )
     }
 
@@ -107,11 +126,19 @@ class MainActivityViewModel(
         getCurrentDateUseCase.execute(Request("", needFresh = true))
     }
 
-    fun queryEDocument(orderType: String?, docType: String?) {
+    fun queryEDocumentTC() {
         val request = QueryEDocumentRequest(
-            orderType = orderType,
-            docType = docType,
+            orderType = "PI",
+            docType = "TC",
         )
-        queryEDocumentUseCase.execute(Request(request, needFresh = true))
+        queryEDocumentTCUseCase.execute(Request(request, needFresh = true))
+    }
+
+    fun queryEDocumentConsent() {
+        val request = QueryEDocumentRequest(
+            orderType = "PI",
+            docType = "Consent",
+        )
+        queryEDocumentConsentUseCase.execute(Request(request, needFresh = true))
     }
 }
