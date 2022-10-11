@@ -1,20 +1,16 @@
-package com.theexistingcompany.aisdevtool
+package com.theexistingcompany.aisdevtool.model
 
-import android.util.Log
 import com.theexistingcompany.aisdevtool.baselib.MediatorUseCase
 import com.theexistingcompany.aisdevtool.baselib.Request
 import com.theexistingcompany.aisdevtool.baselib.Result
-import com.theexistingcompany.aisdevtool.model.AuthRequest
-import com.theexistingcompany.aisdevtool.model.AuthResponse
 import com.theexistingcompany.aisdevtool.repository.EasyAppRepository
 
-
-class LogInUseCase constructor(
+class QueryEDocumentUseCase (
     private var easyAppRepository: EasyAppRepository,
-) : MediatorUseCase<Request<AuthRequest>, AuthResponse?>() {
-    override fun execute(parameters: Request<AuthRequest>) {
+) : MediatorUseCase<Request<QueryEDocumentRequest>, QueryEDocumentResponse?>() {
+    override fun execute(parameters: Request<QueryEDocumentRequest>) {
 
-        result.addSource(easyAppRepository.logIn(parameters)) {
+        result.addSource(easyAppRepository.queryEDocument(parameters)) {
             when (it) {
                 is Result.Success -> {
 //                    Log.d("myDebug", "success")

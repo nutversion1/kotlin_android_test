@@ -24,7 +24,7 @@ class ApiManager(
 
         httpClient.addInterceptor { chain ->
             val request: Request = chain.request().newBuilder()
-                .addHeader("x-authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkpBUlVXQU5OIiwidGltZXN0YW1wIjoiMTY2NTM4NDIzNzA3NiIsImxvY2F0aW9uQ29kZSI6IiIsImVtYWlsIjoiIiwiZmlyc3RuYW1lIjoiIiwibGFzdG5hbWUiOiIiLCJzaGFyZWRVc2VyIjoiamFydXdhbm4iLCJ1c2VyVHlwZSI6IiIsInJvbGUiOiJBSVMiLCJjaGFubmVsVHlwZSI6ImVhc3ktYXBwIiwiYXNjQ29kZSI6IiIsIm1vYmlsZU5vIjoiIiwic3ViIjoiQllQQVNTSURTIiwib3V0Q2huU2FsZXMiOiJTYWxlcyBQcm9tb3RlciIsIm91dEJ1c2luZXNzTmFtZSI6IiIsIm91dFBvc2l0aW9uIjoiU2FsZXMiLCJvdSI6IkVNUExPWUVFIiwiaWF0IjoxNjY1Mzg0MjQ4LCJleHAiOjE2NjU0NzA2NDh9.EYqeZMxOmfkMBlCQrOO_dvtwiQjCC919jOUWd21VEfc")
+                .addHeader("x-authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkpBUlVXQU5OIiwidGltZXN0YW1wIjoiMTY2NTM5NjYzMjM5OSIsImxvY2F0aW9uQ29kZSI6IiIsImVtYWlsIjoiIiwiZmlyc3RuYW1lIjoiIiwibGFzdG5hbWUiOiIiLCJzaGFyZWRVc2VyIjoiamFydXdhbm4iLCJ1c2VyVHlwZSI6IiIsInJvbGUiOiJBSVMiLCJjaGFubmVsVHlwZSI6ImVhc3ktYXBwIiwiYXNjQ29kZSI6IiIsIm1vYmlsZU5vIjoiIiwic3ViIjoiQllQQVNTSURTIiwib3V0Q2huU2FsZXMiOiJTYWxlcyBQcm9tb3RlciIsIm91dEJ1c2luZXNzTmFtZSI6IiIsIm91dFBvc2l0aW9uIjoiU2FsZXMiLCJvdSI6IkVNUExPWUVFIiwiaWF0IjoxNjY1Mzk2NjQ2LCJleHAiOjE2NjU2NTU4NDZ9.8sxEtQgFd9kE6tYYRMG9nqO-NfqhASK-l_H38LVqLXo")
                 .addHeader("channelType", "easy-app")
                 .build()
             chain.proceed(request)

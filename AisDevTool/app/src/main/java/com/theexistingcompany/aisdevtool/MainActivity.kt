@@ -7,8 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.theexistingcompany.aisdevtool.api.EasyAppService
-import com.theexistingcompany.aisdevtool.model.AuthRequest
-import com.theexistingcompany.aisdevtool.model.AuthResponse
+import com.theexistingcompany.aisdevtool.model.*
 import com.theexistingcompany.aisdevtool.viewmodel.MainActivityViewModel
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -37,11 +36,29 @@ class MainActivity : AppCompatActivity() {
                 it.logInSuccess.observe(this, logInSuccessObserver)
                 it.loginFailure.observe(this, logInFailureObserver)
                 it.loginLoading.observe(this, logInLoadingObserver)
+
+                it.checkDeathStatusSuccess.observe(this, checkDeathStatusSuccessObserver)
+                it.checkDeathStatusFailure.observe(this, checkDeathStatusFailureObserver)
+                it.checkDeathStatusLoading.observe(this, checkDeathStatusLoadingObserver)
+
+                it.getCurrentDateSuccess.observe(this, getCurrentDateSuccessObserver)
+                it.getCurrentDateFailure.observe(this, getCurrentDateFailureObserver)
+                it.getCurrentDateLoading.observe(this, getCurrentDateLoadingObserver)
+
+                it.queryEDocumentSuccess.observe(this, queryEDocumentSuccessObserver)
+                it.queryEDocumentFailure.observe(this, queryEDocumentFailureObserver)
+                it.queryEDocumentLoading.observe(this, queryEDocumentLoadingObserver)
             }
 
-            mainActivityViewModel.logIn("jaruwann", "0")
+//            mainActivityViewModel.logIn("jaruwann", "0")
+//            mainActivityViewModel.checkDeathStatus("1100701208535", "25330715")
+//            mainActivityViewModel.getCurrentDate()
+//            mainActivityViewModel.queryEDocument("PI", "TC")
+            mainActivityViewModel.queryEDocument("PI", "Consent")
         }
     }
+
+    /////////////////////////////
 
     private val logInSuccessObserver = Observer<AuthResponse?> {
         Log.d("myDebug", "success: $it")
@@ -49,12 +66,64 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val logInFailureObserver = Observer<String?> {
-        Log.d("myDebug", "fail")
+        Log.d("myDebug", "fail: $it")
         displayTextView.text = "fail: $it"
     }
 
     private val logInLoadingObserver = Observer<Unit> {
-        Log.d("myDebug", "loading")
+        Log.d("myDebug", "loading 1")
         displayTextView.text = "loading..."
+    }
+
+    /////////////////////////////
+
+    private val checkDeathStatusSuccessObserver = Observer<CheckDeathStatusResponse?> {
+        Log.d("myDebug", "success: $it")
+
+    }
+
+    private val checkDeathStatusFailureObserver = Observer<String?> {
+        Log.d("myDebug", "fail: $it")
+
+    }
+
+    private val checkDeathStatusLoadingObserver = Observer<Unit> {
+        Log.d("myDebug", "loading 2")
+
+    }
+
+    /////////////////////////////
+
+    private val getCurrentDateSuccessObserver = Observer<GetCurrentDateResponse?> {
+        Log.d("myDebug", "success: $it")
+
+    }
+
+    private val getCurrentDateFailureObserver = Observer<String?> {
+        Log.d("myDebug", "fail: $it")
+
+    }
+
+    private val getCurrentDateLoadingObserver = Observer<Unit> {
+        Log.d("myDebug", "loading 3")
+
+    }
+
+    /////////////////////////////
+
+    private val queryEDocumentSuccessObserver = Observer<QueryEDocumentResponse?> {
+
+        Log.d("myDebug", "success: $it")
+
+    }
+
+    private val queryEDocumentFailureObserver = Observer<String?> {
+        Log.d("myDebug", "fail: $it")
+
+    }
+
+    private val queryEDocumentLoadingObserver = Observer<Unit> {
+        Log.d("myDebug", "loading 4")
+
     }
 }

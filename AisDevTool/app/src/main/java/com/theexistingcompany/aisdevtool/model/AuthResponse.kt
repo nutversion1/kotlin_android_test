@@ -9,10 +9,10 @@ data class AuthResponse(
     @SerializedName("resultCode") val resultCode: String?,
     @SerializedName("resultDescription") val resultDescription: String?,
     @SerializedName("developerMessage") val developerMessage: String?,
-    @SerializedName("data") val data: Data,
+    @SerializedName("data") val data: AuthData,
 ) : Parcelable
 
 @Parcelize
-data class Data(
+data class AuthData(
     @SerializedName("token") val token: String?,
 ) : Parcelable
