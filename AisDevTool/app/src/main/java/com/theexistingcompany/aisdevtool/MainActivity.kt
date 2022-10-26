@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                 it.queryEDocumentConsentLoading.observe(this, queryEDocumentConsentLoadingObserver)
             }
 
-//            mainActivityViewModel.logIn("jaruwann", "0")
+            mainActivityViewModel.logIn("jaruwann", "0")
 //            mainActivityViewModel.checkDeathStatus("1100701208535", "25330715")
 //            mainActivityViewModel.getCurrentDate()
             mainActivityViewModel.queryEDocumentTC()
