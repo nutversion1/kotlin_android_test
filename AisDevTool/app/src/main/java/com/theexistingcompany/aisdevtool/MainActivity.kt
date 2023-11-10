@@ -2,6 +2,8 @@ package com.theexistingcompany.aisdevtool
 
 import android.os.Bundle
 import android.util.Log
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     private val imageView by lazy{ findViewById<ImageView>(R.id.imageView) }
     private val displayTextView by lazy{ findViewById<TextView>(R.id.displayTextView) }
     private val button by lazy{ findViewById<TextView>(R.id.button) }
+    private val webView by lazy{ findViewById<WebView>(R.id.webView) }
 
     private val mainActivityViewModel: MainActivityViewModel by viewModel()
 
@@ -48,9 +51,15 @@ class MainActivity : AppCompatActivity() {
             mainActivityViewModel.logIn("jaruwann", "0")
 //            mainActivityViewModel.checkDeathStatus("1100701208535", "25330715")
 //            mainActivityViewModel.getCurrentDate()
-            mainActivityViewModel.queryEDocumentTC()
-            mainActivityViewModel.queryEDocumentConsent()
+//            mainActivityViewModel.queryEDocumentTC()
+//            mainActivityViewModel.queryEDocumentConsent()
         }
+
+        webView.webViewClient = WebViewClient()
+        webView.settings.javaScriptEnabled = true
+
+        webView.loadUrl("https://dev-kyc.cdc.ais.th/client/callback?token=NgbR6nlNg3FsDCT5yw01iFw7GFQoI%2FjI%2FJV5PaKgQmXWJnyA2h3h7cAqFwaIsuJZLRGGvjmhbGZ9ozA4dk9qc6%2BGZlHNKTzBG1YvD%2B9SnSY%3D")
+//        webView.loadUrl("https://youtube.com")
     }
 
     /////////////////////////////
